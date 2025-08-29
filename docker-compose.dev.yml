@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: fastapi_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: fastapi_nextjs
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  # FastAPI Backend
+  backend:
+    image: python:3.9-slim
+    container_name: fastapi_backend
+    ports:
+      - "9000:9000"
+    environment:
+      - DATABASE__HOSTNAME=postgres
+      - DATABASE__USERNAME=postgres
+      - DATABASE__PASSWORD=postgres123
+      - DATABASE__PORT=5432
+      - DATABASE__DB=fastapi_nextjs
+      - SECURITY__JWT_SECRET_KEY=your-secret-key-here-change-in-production
+      - SECURITY__BACKEND_CORS_ORIGINS=["http://localhost:3000", "http://frontend:3000"]
+      - SECURITY__ALLOWED_HOSTS=["localhost", "127.0.0.1"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - app-network
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    command: >
+      sh -c "
+        apt-get update && apt-get install -y gcc libpq-dev curl &&
+        pip install -r requirements.txt &&
+        echo 'Waiting for database...' &&
+        sleep 10 &&
+        python -m alembic upgrade head &&
+        uvicorn app.main:app --host 0.0.0.0 --port 9000 --reload
+      "
+
+  # Next.js Frontend
+  frontend:
+    image: node:18-alpine
+    container_name: fastapi_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:9000
+      - NODE_ENV=development
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - app-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    working_dir: /app
+    command: >
+      sh -c "
+        npm install &&
+        npm run dev
+      "
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
