@@ -42,7 +42,7 @@ cd full-stack-fastapi-template
 │   ├── src/                # Source code
 │   └── package.json        # Node.js dependencies
 ├── scripts/                 # Utility scripts
-├── docker-compose.dev.yml   # Development environment
+├── vibe.yaml   # Development environment
 ├── docker-compose.db.yml    # Database service
 └── DOCKER.md               # Docker documentation
 ```
@@ -51,17 +51,17 @@ cd full-stack-fastapi-template
 
 ### Start Development Environment
 ```bash
-docker-compose -f docker-compose.dev.yml up -d
+docker-compose -f vibe.yaml up -d
 ```
 
 ### Stop Services
 ```bash
-docker-compose -f docker-compose.dev.yml down
+docker-compose -f vibe.yaml down
 ```
 
 ### View Logs
 ```bash
-docker-compose -f docker-compose.dev.yml logs -f
+docker-compose -f vibe.yaml logs -f
 ```
 
 ## 📚 Documentation

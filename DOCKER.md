@@ -13,7 +13,7 @@ This guide explains how to run the FastAPI + Next.js full-stack application usin
 
 2. **Or manually with Docker Compose:**
    ```bash
-   docker-compose -f docker-compose.dev.yml up --build
+   docker-compose -f vibe.yaml up --build
    ```
 
 3. **Access your application:**
@@ -62,7 +62,7 @@ This guide explains how to run the FastAPI + Next.js full-stack application usin
 
 ## Docker Compose Files
 
-### `docker-compose.dev.yml`
+### `vibe.yaml`
 - Development configuration
 - Volume mounts for live code editing
 - Hot reload enabled
@@ -81,7 +81,7 @@ This guide explains how to run the FastAPI + Next.js full-stack application usin
 ## Environment Variables
 
 ### Development
-- Uses default values from `docker-compose.dev.yml`
+- Uses default values from `vibe.yaml`
 - Database: postgres/postgres123
 - JWT Secret: Default development key
 
@@ -96,7 +96,7 @@ This guide explains how to run the FastAPI + Next.js full-stack application usin
 ### Start Services
 ```bash
 # Development
-docker-compose -f docker-compose.dev.yml up -d
+docker-compose -f vibe.yaml up -d
 
 # Production
 docker-compose -f docker-compose.prod.yml up -d
@@ -126,10 +126,10 @@ docker-compose -f docker-compose.dev.yml logs -f backend
 ### Rebuild Services
 ```bash
 # Rebuild and restart
-docker-compose -f docker-compose.dev.yml up --build -d
+docker-compose -f vibe.yaml up --build -d
 
 # Rebuild specific service
-docker-compose -f docker-compose.dev.yml build backend
+docker-compose -f vibe.yaml build backend
 ```
 
 ## Troubleshooting
@@ -164,13 +164,13 @@ All services include health checks:
 Monitor service status:
 ```bash
 # Service status
-docker-compose -f docker-compose.dev.yml ps
+docker-compose -f vibe.yaml ps
 
 # Resource usage
 docker stats
 
 # Container logs
-docker-compose -f docker-compose.dev.yml logs -f
+docker-compose -f vibe.yaml logs -f
 ```
 
 ## Security Considerations
