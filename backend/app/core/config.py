@@ -46,7 +46,7 @@ class Database(BaseModel):
     hostname: str = "localhost"
     username: str = "postgres"
     password: SecretStr = SecretStr("postgres123")
-    port: int = 5432
+    port: int = 5433
     db: str = "fastapi_nextjs"
 
 
