@@ -80,8 +80,8 @@ class ApiService {
   }
 
   // Health check
-  async healthCheck(): Promise<boolean> {
-    return this.request<boolean>('/api/v1/utils/health-check/');
+  async healthCheck(): Promise<{status: string}> {
+    return this.request<{status: string}>('/health');
   }
 }
 

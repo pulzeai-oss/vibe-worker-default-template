@@ -19,8 +19,12 @@ export default function Home() {
 
   const checkApiStatus = async () => {
     try {
-      await apiService.healthCheck();
-      setApiStatus("connected");
+      const healthResponse = await apiService.healthCheck();
+      if (healthResponse.status === "healthy") {
+        setApiStatus("connected");
+      } else {
+        setApiStatus("disconnected");
+      }
     } catch (error) {
       setApiStatus("disconnected");
     }
@@ -208,7 +212,7 @@ export default function Home() {
                 <Button variant="outline" onClick={checkApiStatus}>
                   Check API Health
                 </Button>
-                <Button variant="outline" onClick={() => window.open("http://localhost:8000/api/v1/utils/health-check/", "_blank")}>
+                <Button variant="outline" onClick={() => window.open("http://localhost:8000/health", "_blank")}>
                   Health Check
                 </Button>
               </div>
