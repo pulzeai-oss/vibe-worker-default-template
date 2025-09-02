@@ -1,10 +1,11 @@
-version: '3.8'
+name: vibe-worker-default-template
+description: "Vibe Worker Default Template"
+author: "Sameer Khan"
 
 services:
   # PostgreSQL Database
-  postgres:
-    image: postgres:15
-    container_name: fastapi_postgres
+  database:
+    type: postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres123
@@ -13,19 +14,12 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     networks:
       - app-network
 
   # FastAPI Backend
   backend:
-    image: python:3.9-slim
-    container_name: fastapi_backend
+    type: fastapi
     ports:
       - "9000:9000"
     environment:
@@ -58,8 +52,7 @@ services:
 
   # Next.js Frontend
   frontend:
-    image: node:18-alpine
-    container_name: fastapi_frontend
+    type: nextjs
     ports:
       - "3000:3000"
     environment:
@@ -80,9 +73,3 @@ services:
         npm run dev
       "
 
-volumes:
-  postgres_data:
-
-networks:
-  app-network:
-    driver: bridge
