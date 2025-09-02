@@ -20,7 +20,7 @@ This guide explains how to run the FastAPI + Next.js full-stack application usin
    - Frontend: http://localhost:3000
    - Backend: http://localhost:9000
    - API Docs: http://localhost:9000/docs
-   - Database: localhost:5433
+   - Database: localhost:5432
 
 ### Production Environment
 
@@ -39,7 +39,7 @@ This guide explains how to run the FastAPI + Next.js full-stack application usin
 
 ### 1. PostgreSQL Database
 - **Image:** postgres:15
-- **Port:** 5433
+- **Port:** 5432
 - **Volume:** Persistent data storage
 - **Health Check:** Automatic database readiness check
 
@@ -137,7 +137,7 @@ docker-compose -f vibe.yaml build backend
 ### Common Issues
 
 1. **Port conflicts:**
-   - Check if ports 3000, 8000, or 5433 are already in use
+   - Check if ports 3000, 8000, or 5432 are already in use
    - Stop conflicting services or change ports in docker-compose files
 
 2. **Database connection issues:**

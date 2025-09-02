@@ -22,7 +22,7 @@ cd full-stack-fastapi-template
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:9000
 - **API Documentation**: http://localhost:9000/docs
-- **Database**: PostgreSQL on port 5433
+- **Database**: PostgreSQL on port 5432
 
 ## 🏗️ Architecture
 

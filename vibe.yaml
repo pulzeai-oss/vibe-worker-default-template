@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: postgres123
       POSTGRES_DB: fastapi_nextjs
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
@@ -32,7 +32,7 @@ services:
       - DATABASE__HOSTNAME=postgres
       - DATABASE__USERNAME=postgres
       - DATABASE__PASSWORD=postgres123
-      - DATABASE__PORT=5433
+      - DATABASE__PORT=5432
       - DATABASE__DB=fastapi_nextjs
       - SECURITY__JWT_SECRET_KEY=your-secret-key-here-change-in-production
       - SECURITY__BACKEND_CORS_ORIGINS=["http://localhost:3000", "http://frontend:3000"]
