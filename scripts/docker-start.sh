@@ -15,15 +15,15 @@ fi
 
 # Stop any existing containers
 echo "🛑 Stopping existing containers..."
-docker-compose -f vibe.yaml down 2>/dev/null || true
+docker-compose down 2>/dev/null || true
 
 # Start the stack
 echo "🔧 Starting services..."
-docker-compose -f vibe.yaml up -d
+docker-compose up -d
 
 # Wait for database to be ready
 echo "🗄️  Waiting for PostgreSQL database..."
-until docker-compose -f vibe.yaml exec -T postgres pg_isready -U postgres > /dev/null 2>&1; do
+until docker-compose exec -T postgres pg_isready -U postgres > /dev/null 2>&1; do
     echo "   Database not ready yet, waiting..."
     sleep 2
 done
@@ -55,9 +55,9 @@ echo "   📚 API Docs: http://localhost:9000/docs"
 echo "   🗄️  Database: localhost:5432"
 echo ""
 echo "📝 Useful Commands:"
-echo "   View logs: docker-compose -f vibe.yaml logs -f"
-echo "   Stop services: docker-compose -f vibe.yaml down"
+echo "   View logs: docker-compose logs -f"
+echo "   Stop services: docker-compose down"
 echo "   Restart: ./scripts/docker-start.sh"
 echo ""
 echo "🔍 Checking container status..."
-docker-compose -f vibe.yaml ps
+docker-compose ps

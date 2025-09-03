@@ -21,9 +21,13 @@ async def create_default_admin():
     if not settings.create_default_admin:
         return
     
-    async with get_session() as session:
+    # Get a database session using the generator
+    session_gen = get_session()
+    session = next(session_gen)
+    
+    try:
         # Check if admin user already exists
-        result = await session.execute(
+        result = session.execute(
             text("SELECT COUNT(*) FROM user_account WHERE email = :email"),
             {"email": settings.admin.email}
         )
@@ -34,7 +38,7 @@ async def create_default_admin():
             password_hash = pwd_context.hash(settings.admin.password)
             user_id = str(uuid.uuid4())
             
-            await session.execute(
+            session.execute(
                 text("""
                     INSERT INTO user_account (user_id, email, hashed_password, is_admin, role, create_time, update_time)
                     VALUES (:user_id, :email, :password_hash, true, 'ADMIN', now(), now())
@@ -45,8 +49,11 @@ async def create_default_admin():
                     "password_hash": password_hash
                 }
             )
-            await session.commit()
+            session.commit()
             print(f"✅ Created default admin user: {settings.admin.email}")
+    finally:
+        # Close the session
+        session.close()
 
 
 @asynccontextmanager
