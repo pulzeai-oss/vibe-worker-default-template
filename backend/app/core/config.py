@@ -37,6 +37,8 @@ class Security(BaseModel):
     backend_cors_origins: list[AnyHttpUrl] = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
+        "http://localhost:8000",  # Allow main vibe-worker proxy
+        "http://127.0.0.1:8000",
     ]
 
     @validator("backend_cors_origins", pre=True)
