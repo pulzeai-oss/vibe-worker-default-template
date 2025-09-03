@@ -1,4 +1,5 @@
 from pydantic import BaseModel, ConfigDict, EmailStr
+from app.models import UserRole
 
 
 class BaseResponse(BaseModel):
@@ -16,3 +17,5 @@ class AccessTokenResponse(BaseResponse):
 class UserResponse(BaseResponse):
     user_id: str
     email: EmailStr
+    is_admin: bool
+    role: UserRole

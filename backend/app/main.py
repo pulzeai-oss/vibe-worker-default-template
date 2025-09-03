@@ -1,9 +1,62 @@
+import uuid
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from sqlalchemy import text
+from passlib.context import CryptContext
 
 from app.api.api_router import api_router, auth_router
 from app.core.config import get_settings
+from app.core.database_session import get_session
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+async def create_default_admin():
+    """Create default admin user if CREATE_DEFAULT_ADMIN is True and user doesn't exist"""
+    settings = get_settings()
+    
+    if not settings.create_default_admin:
+        return
+    
+    async with get_session() as session:
+        # Check if admin user already exists
+        result = await session.execute(
+            text("SELECT COUNT(*) FROM user_account WHERE email = :email"),
+            {"email": settings.admin.email}
+        )
+        user_exists = result.scalar() > 0
+        
+        if not user_exists:
+            # Create admin user
+            password_hash = pwd_context.hash(settings.admin.password)
+            user_id = str(uuid.uuid4())
+            
+            await session.execute(
+                text("""
+                    INSERT INTO user_account (user_id, email, hashed_password, is_admin, role, create_time, update_time)
+                    VALUES (:user_id, :email, :password_hash, true, 'ADMIN', now(), now())
+                """),
+                {
+                    "user_id": user_id,
+                    "email": settings.admin.email,
+                    "password_hash": password_hash
+                }
+            )
+            await session.commit()
+            print(f"✅ Created default admin user: {settings.admin.email}")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    await create_default_admin()
+    yield
+    # Shutdown
+    pass
+
 
 app = FastAPI(
     title="FastAPI Backend",
@@ -11,6 +64,7 @@ app = FastAPI(
     description="A modern FastAPI backend with SQLAlchemy and PostgreSQL",
     openapi_url="/openapi.json",
     docs_url="/docs",
+    lifespan=lifespan,
 )
 
 app.include_router(auth_router, prefix="/api/v1")
