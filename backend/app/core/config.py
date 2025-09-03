@@ -50,9 +50,16 @@ class Database(BaseModel):
     db: str = "fastapi_nextjs"
 
 
+class Admin(BaseModel):
+    email: str = "admin@example.com"
+    password: str = "admin123"
+
+
 class Settings(BaseSettings):
     security: Security = Field(default_factory=Security)
     database: Database = Field(default_factory=Database)
+    admin: Admin = Field(default_factory=Admin)
+    create_default_admin: bool = False
     log_level: str = "INFO"
 
     @computed_field  # type: ignore[prop-decorator]

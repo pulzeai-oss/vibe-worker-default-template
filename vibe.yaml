@@ -31,6 +31,9 @@ services:
       - SECURITY__JWT_SECRET_KEY=your-secret-key-here-change-in-production
       - SECURITY__BACKEND_CORS_ORIGINS=["http://localhost:3000", "http://frontend:3000"]
       - SECURITY__ALLOWED_HOSTS=["localhost", "127.0.0.1"]
+      - ADMIN__EMAIL=admin@example.com
+      - ADMIN__PASSWORD=admin123
+      - CREATE_DEFAULT_ADMIN=true
     depends_on:
       postgres:
         condition: service_healthy

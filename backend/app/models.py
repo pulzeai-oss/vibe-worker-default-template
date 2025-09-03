@@ -38,6 +38,7 @@ class User(Base):
         String(256), nullable=False, unique=True, index=True
     )
     hashed_password: Mapped[str] = mapped_column(String(128), nullable=False)
+    is_admin: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     refresh_tokens: Mapped[list["RefreshToken"]] = relationship(back_populates="user")
 
 
