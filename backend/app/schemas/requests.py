@@ -1,4 +1,6 @@
 from pydantic import BaseModel, EmailStr
+from typing import Optional
+from app.models import UserRole
 
 
 class BaseRequest(BaseModel):
@@ -17,3 +19,10 @@ class UserUpdatePasswordRequest(BaseRequest):
 class UserCreateRequest(BaseRequest):
     email: EmailStr
     password: str
+    role: Optional[UserRole] = UserRole.VIEWER
+
+
+class AdminUserCreateRequest(BaseRequest):
+    email: EmailStr
+    password: str
+    role: UserRole = UserRole.VIEWER

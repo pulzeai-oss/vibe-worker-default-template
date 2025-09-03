@@ -1,6 +1,7 @@
 import time
 
 from jose import jwt
+from jose.exceptions import JWSError
 from fastapi import HTTPException, status
 from pydantic import BaseModel
 
@@ -60,7 +61,7 @@ def verify_jwt_token(token: str) -> JWTTokenPayload:
             options={"verify_signature": True},
             issuer=get_settings().security.jwt_issuer,
         )
-    except jwt.InvalidTokenError as e:
+    except (jwt.JWTError, jwt.ExpiredSignatureError, JWSError) as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"Token invalid: {e}",

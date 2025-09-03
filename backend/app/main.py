@@ -36,8 +36,8 @@ async def create_default_admin():
             
             await session.execute(
                 text("""
-                    INSERT INTO user_account (user_id, email, hashed_password, is_admin, create_time, update_time)
-                    VALUES (:user_id, :email, :password_hash, true, now(), now())
+                    INSERT INTO user_account (user_id, email, hashed_password, is_admin, role, create_time, update_time)
+                    VALUES (:user_id, :email, :password_hash, true, 'ADMIN', now(), now())
                 """),
                 {
                     "user_id": user_id,

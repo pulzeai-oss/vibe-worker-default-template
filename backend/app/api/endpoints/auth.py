@@ -16,7 +16,7 @@ from app.core.security.password import (
     get_password_hash,
     verify_password,
 )
-from app.models import RefreshToken, User
+from app.models import RefreshToken, User, UserRole
 from app.schemas.requests import RefreshTokenRequest, UserCreateRequest
 from app.schemas.responses import AccessTokenResponse, UserResponse
 
@@ -178,6 +178,8 @@ def register_new_user(
     user = User(
         email=new_user.email,
         hashed_password=get_password_hash(new_user.password),
+        role=new_user.role,
+        is_admin=new_user.role == UserRole.ADMIN if hasattr(new_user, 'role') else False,
     )
     session.add(user)
 
