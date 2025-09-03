@@ -31,15 +31,28 @@ class Security(BaseModel):
     refresh_token_expire_secs: int = 28 * 24 * 3600  # 28d
     password_bcrypt_rounds: int = 12
     allowed_hosts: list[str] = ["localhost", "127.0.0.1"]
-    backend_cors_origins: list[AnyHttpUrl] = []
+    # Default CORS origins for development. In production, these can be overridden
+    # via environment variables following the nested delimiter pattern:
+    # SECURITY__BACKEND_CORS_ORIGINS="https://yourdomain.com,https://www.yourdomain.com"
+    backend_cors_origins: list[AnyHttpUrl] = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ]
 
     @validator("backend_cors_origins", pre=True)
-    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
+    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
         if isinstance(v, str) and not v.startswith("["):
             return [i.strip() for i in v.split(",")]
-        elif isinstance(v, (list, str)):
+        elif isinstance(v, list):
             return v
-        raise ValueError(v)
+        elif isinstance(v, str) and v.startswith("["):
+            # Handle JSON array string
+            import json
+            try:
+                return json.loads(v)
+            except json.JSONDecodeError:
+                return []
+        return []
 
 
 class Database(BaseModel):

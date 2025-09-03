@@ -1,16 +1,30 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { apiService, User, Item } from "@/services/api";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Home() {
   const [users, setUsers] = useState<User[]>([]);
   const [items, setItems] = useState<Item[]>([]);
   const [apiStatus, setApiStatus] = useState<"connected" | "disconnected" | "checking">("checking");
   const [loading, setLoading] = useState(true);
+  const { isAuthenticated, loading: authLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!authLoading) {
+      if (isAuthenticated) {
+        router.push("/dashboard");
+      } else {
+        router.push("/login");
+      }
+    }
+  }, [authLoading, isAuthenticated, router]);
 
   useEffect(() => {
     checkApiStatus();
@@ -95,7 +109,7 @@ export default function Home() {
                 ) : (
                   <div className="space-y-2">
                     {users.slice(0, 3).map((user) => (
-                      <div key={user.id} className="text-sm">
+                      <div key={user.user_id} className="text-sm">
                         <div className="font-medium">{user.full_name || user.email}</div>
                         <div className="text-gray-500">{user.email}</div>
                       </div>
