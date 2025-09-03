@@ -82,7 +82,19 @@ class ApiService {
           this.logout();
           throw new Error('Authentication failed');
         }
-        throw new Error(`HTTP error! status: ${response.status}`);
+        
+        // Try to get error message from response
+        let errorMessage = `HTTP error! status: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          if (errorData.detail) {
+            errorMessage = errorData.detail;
+          }
+        } catch {
+          // If we can't parse the error response, use the default message
+        }
+        
+        throw new Error(errorMessage);
       }
       
       return await response.json();
@@ -148,6 +160,13 @@ class ApiService {
 
   async register(userData: RegisterRequest): Promise<User> {
     return this.request<User>('/api/v1/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(userData),
+    });
+  }
+
+  async inviteUser(userData: RegisterRequest): Promise<User> {
+    return this.request<User>('/api/v1/auth/invite-user', {
       method: 'POST',
       body: JSON.stringify(userData),
     });

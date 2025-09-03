@@ -8,6 +8,7 @@ interface AuthContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, role?: 'admin' | 'editor' | 'viewer') => Promise<void>;
+  inviteUser: (email: string, password: string, role?: 'admin' | 'editor' | 'viewer') => Promise<User>;
   logout: () => void;
   resetPassword: (password: string) => Promise<void>;
   isAuthenticated: boolean;
@@ -61,6 +62,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const inviteUser = async (email: string, password: string, role: 'admin' | 'editor' | 'viewer' = 'viewer') => {
+    try {
+      const newUser = await apiService.inviteUser({ email, password, role });
+      return newUser;
+    } catch (error) {
+      console.error('User invitation failed:', error);
+      throw error;
+    }
+  };
+
   const logout = () => {
     setUser(null);
     apiService.logout();
@@ -82,6 +93,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loading,
         login,
         register,
+        inviteUser,
         logout,
         resetPassword,
         isAuthenticated,

@@ -14,7 +14,8 @@ import {
   LogOut, 
   Edit3,
   Eye,
-  Crown
+  Crown,
+  UserPlus
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -177,6 +178,20 @@ export default function DashboardPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
+                {user.is_admin && (
+                  <>
+                    <Button 
+                      variant="default" 
+                      className="w-full justify-start bg-blue-600 hover:bg-blue-700"
+                      onClick={() => router.push('/invite')}
+                    >
+                      <UserPlus className="h-4 w-4 mr-2" />
+                      Invite User
+                    </Button>
+                    <Separator />
+                  </>
+                )}
+                
                 <Button 
                   variant="outline" 
                   className="w-full justify-start"
