@@ -18,7 +18,7 @@ services:
     ports:
       - "9000:9000"
     environment:
-      - DATABASE__HOSTNAME=postgres
+      - DATABASE__HOSTNAME=localhost
       - DATABASE__USERNAME=postgres
       - DATABASE__PASSWORD=postgres123
       - DATABASE__PORT=5432
@@ -70,4 +70,3 @@ services:
         npm install &&
         npm run dev
       "
-
