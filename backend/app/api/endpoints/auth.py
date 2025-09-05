@@ -16,7 +16,7 @@ from app.core.security.password import (
     get_password_hash,
     verify_password,
 )
-from app.models import RefreshToken, User
+from app.models import RefreshToken, User, UserRole
 from app.schemas.requests import RefreshTokenRequest, UserCreateRequest
 from app.schemas.responses import AccessTokenResponse, UserResponse
 
@@ -178,6 +178,54 @@ def register_new_user(
     user = User(
         email=new_user.email,
         hashed_password=get_password_hash(new_user.password),
+        role=new_user.role,
+        is_admin=new_user.role == UserRole.ADMIN,
+    )
+    session.add(user)
+
+    try:
+        session.commit()
+    except IntegrityError:  # pragma: no cover
+        session.rollback()
+
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=api_messages.EMAIL_ADDRESS_ALREADY_USED,
+        )
+
+    return user
+
+
+@router.post(
+    "/invite-user",
+    response_model=UserResponse,
+    description="Invite a new user (admin only)",
+    status_code=status.HTTP_201_CREATED,
+)
+def invite_user(
+    new_user: UserCreateRequest,
+    session: Session = Depends(deps.get_session),
+    current_user: User = Depends(deps.get_current_user),
+) -> User:
+    # Check if current user is admin
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only administrators can invite users",
+        )
+
+    user = session.scalar(select(User).where(User.email == new_user.email))
+    if user is not None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=api_messages.EMAIL_ADDRESS_ALREADY_USED,
+        )
+
+    user = User(
+        email=new_user.email,
+        hashed_password=get_password_hash(new_user.password),
+        role=new_user.role,
+        is_admin=new_user.role == UserRole.ADMIN,
     )
     session.add(user)
 

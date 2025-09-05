@@ -14,9 +14,16 @@
 
 import uuid
 from datetime import datetime
+from enum import Enum
 
-from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey, Integer, String, Uuid, func
+from sqlalchemy import BigInteger, Boolean, Column, DateTime, ForeignKey, Integer, String, Uuid, func, Enum as SQLEnum
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
+
+class UserRole(str, Enum):
+    VIEWER = "viewer"
+    EDITOR = "editor"
+    ADMIN = "admin"
 
 
 class Base(DeclarativeBase):
@@ -38,6 +45,8 @@ class User(Base):
         String(256), nullable=False, unique=True, index=True
     )
     hashed_password: Mapped[str] = mapped_column(String(128), nullable=False)
+    is_admin: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    role: Mapped[UserRole] = mapped_column(SQLEnum(UserRole), nullable=False, default=UserRole.VIEWER)
     refresh_tokens: Mapped[list["RefreshToken"]] = relationship(back_populates="user")
 
 
