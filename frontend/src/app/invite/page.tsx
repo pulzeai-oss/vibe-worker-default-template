@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useProxyAwareRouter } from "@/utils/navigation";
 import { ArrowLeft, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InviteForm } from "@/components/auth/InviteForm";
@@ -9,7 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 export default function InvitePage() {
   const { user, loading, isAuthenticated } = useAuth();
-  const router = useRouter();
+  const router = useProxyAwareRouter();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useProxyAwareRouter } from "@/utils/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ export default function Home() {
   const [apiStatus, setApiStatus] = useState<"connected" | "disconnected" | "checking">("checking");
   const [loading, setLoading] = useState(true);
   const { isAuthenticated, loading: authLoading } = useAuth();
-  const router = useRouter();
+  const router = useProxyAwareRouter();
 
   useEffect(() => {
     if (!authLoading) {

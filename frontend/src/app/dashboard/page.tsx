@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useProxyAwareRouter } from "@/utils/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 export default function DashboardPage() {
   const { user, loading, logout, isAuthenticated } = useAuth();
-  const router = useRouter();
+  const router = useProxyAwareRouter();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

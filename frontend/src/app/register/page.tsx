@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useProxyAwareRouter } from "@/utils/navigation";
 import { ArrowLeft, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RegisterForm } from "@/components/auth/RegisterForm";
 
 export default function RegisterPage() {
-  const router = useRouter();
+  const router = useProxyAwareRouter();
 
   const handleBackToLogin = () => {
     router.push("/login");

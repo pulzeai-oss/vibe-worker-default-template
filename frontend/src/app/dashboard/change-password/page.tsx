@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useProxyAwareRouter } from "@/utils/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -31,7 +31,7 @@ export default function ChangePasswordPage() {
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState(false);
   const { resetPassword } = useAuth();
-  const router = useRouter();
+  const router = useProxyAwareRouter();
 
   const {
     register,
